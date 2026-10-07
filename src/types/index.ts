@@ -1,5 +1,5 @@
 export type Language = 'en' | 'zh';
-export type PageId = 'home' | 'runtime' | 'architecture' | 'scenarios' | 'security';
+export type PageId = 'home' | 'architecture' | 'solutions' | 'specs' | 'security' | 'guarantee' | 'diagnostic';
 
 export type NodeStatus = 'idle' | 'running' | 'completed' | 'awaiting_approval' | 'error';
 

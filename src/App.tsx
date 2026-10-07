@@ -1,17 +1,21 @@
 import React, { useState } from 'react';
 import { LanguageProvider } from './context/LanguageContext';
+import { RouterProvider, useRouter } from './context/RouterContext';
 import { Navbar } from './components/Navbar';
-import { HeroSection } from './components/HeroSection';
-import { InteractiveDagRunner } from './components/InteractiveDagRunner';
-import { InfrastructureStack } from './components/InfrastructureStack';
-import { EnterpriseScenarios } from './components/EnterpriseScenarios';
-import { ProtocolSpecs } from './components/ProtocolSpecs';
-import { SecurityCompliance } from './components/SecurityCompliance';
-import { FaqSection } from './components/FaqSection';
 import { Footer } from './components/Footer';
 import { ArchitectureDiagnosticModal } from './components/ArchitectureDiagnosticModal';
 
+// Pages
+import { HomePage } from './pages/HomePage';
+import { ArchitecturePage } from './pages/ArchitecturePage';
+import { SolutionsPage } from './pages/SolutionsPage';
+import { SpecsPage } from './pages/SpecsPage';
+import { SecurityPage } from './pages/SecurityPage';
+import { GuaranteePage } from './pages/GuaranteePage';
+import { DiagnosticPage } from './pages/DiagnosticPage';
+
 const MainLayout: React.FC = () => {
+  const { currentPage } = useRouter();
   const [isDiagnosticOpen, setIsDiagnosticOpen] = useState<boolean>(false);
 
   const handleOpenDiagnostic = () => {
@@ -22,26 +26,40 @@ const MainLayout: React.FC = () => {
     setIsDiagnosticOpen(false);
   };
 
+  const renderCurrentPage = () => {
+    switch (currentPage) {
+      case 'architecture':
+        return <ArchitecturePage onOpenDiagnostic={handleOpenDiagnostic} />;
+      case 'solutions':
+        return <SolutionsPage onOpenDiagnostic={handleOpenDiagnostic} />;
+      case 'specs':
+        return <SpecsPage />;
+      case 'security':
+        return <SecurityPage />;
+      case 'guarantee':
+        return <GuaranteePage onOpenDiagnostic={handleOpenDiagnostic} />;
+      case 'diagnostic':
+        return <DiagnosticPage />;
+      case 'home':
+      default:
+        return <HomePage onOpenDiagnostic={handleOpenDiagnostic} />;
+    }
+  };
+
   return (
     <div className="min-h-screen bg-white text-slate-950 flex flex-col selection:bg-slate-900 selection:text-white">
       {/* Global Minimalist Header with Selyron Brand Icon */}
       <Navbar onOpenDiagnostic={handleOpenDiagnostic} />
 
-      {/* Main Single-Page Flagship Narrative */}
+      {/* Dynamic Multi-Page Router View */}
       <main className="flex-grow">
-        <HeroSection onOpenDiagnostic={handleOpenDiagnostic} />
-        <InteractiveDagRunner />
-        <InfrastructureStack />
-        <EnterpriseScenarios />
-        <ProtocolSpecs />
-        <SecurityCompliance />
-        <FaqSection onOpenDiagnostic={handleOpenDiagnostic} />
+        {renderCurrentPage()}
       </main>
 
-      {/* Swiss Minimalist Footer with Selyron Brand Icon */}
+      {/* Swiss Minimalist Footer with Status & Multi-Page Sitemap */}
       <Footer onOpenDiagnostic={handleOpenDiagnostic} />
 
-      {/* Interactive 3-Step Architecture Diagnostic Modal */}
+      {/* Interactive Architecture Diagnostic Modal */}
       <ArchitectureDiagnosticModal
         isOpen={isDiagnosticOpen}
         onClose={handleCloseDiagnostic}
@@ -53,7 +71,9 @@ const MainLayout: React.FC = () => {
 export function App() {
   return (
     <LanguageProvider>
-      <MainLayout />
+      <RouterProvider>
+        <MainLayout />
+      </RouterProvider>
     </LanguageProvider>
   );
 }

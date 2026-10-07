@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/LanguageContext';
+import { useRouter } from '../context/RouterContext';
 import { SelyronLogo } from './SelyronLogo';
 import { Menu, X, ArrowUpRight } from 'lucide-react';
+import { PageId } from '../types';
 
 interface NavbarProps {
   onOpenDiagnostic: () => void;
@@ -9,19 +11,20 @@ interface NavbarProps {
 
 export const Navbar: React.FC<NavbarProps> = ({ onOpenDiagnostic }) => {
   const { lang, setLang, t } = useApp();
+  const { currentPage, navigate } = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const toggleLanguage = () => {
     setLang(lang === 'en' ? 'zh' : 'en');
   };
 
-  const navLinks = [
-    { label: t.nav.runtime, href: '#runtime' },
-    { label: t.nav.architecture, href: '#architecture' },
-    { label: t.nav.scenarios, href: '#scenarios' },
-    { label: t.nav.specs, href: '#specs' },
-    { label: t.nav.security, href: '#security' },
-    { label: t.nav.faq, href: '#faq' },
+  const navItems: { label: string; page: PageId; hash?: string }[] = [
+    { label: t.nav.home, page: 'home' },
+    { label: t.nav.architecture, page: 'architecture' },
+    { label: t.nav.solutions, page: 'solutions' },
+    { label: t.nav.specs, page: 'specs' },
+    { label: t.nav.security, page: 'security' },
+    { label: t.nav.guarantee, page: 'guarantee' },
   ];
 
   return (
@@ -31,12 +34,15 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenDiagnostic }) => {
           
           {/* Brand Logo & Telemetry Indicator */}
           <div className="flex items-center gap-3">
-            <a href="#" className="flex items-center gap-2.5 group">
+            <button 
+              onClick={() => navigate('home')} 
+              className="flex items-center gap-2.5 group cursor-pointer text-left"
+            >
               <SelyronLogo size={28} />
               <span className="font-display font-bold text-lg text-slate-950 tracking-tight">
                 SELYRON
               </span>
-            </a>
+            </button>
             
             <div className="hidden sm:flex items-center gap-1.5 pl-3 border-l border-slate-200">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-status-pulse"></span>
@@ -46,17 +52,24 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenDiagnostic }) => {
             </div>
           </div>
 
-          {/* Desktop Navigation Anchors */}
-          <nav className="hidden md:flex items-center gap-5 lg:gap-6">
-            {navLinks.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                className="text-xs font-medium text-slate-600 hover:text-slate-950 transition-colors tracking-normal"
-              >
-                {link.label}
-              </a>
-            ))}
+          {/* Desktop Navigation Links */}
+          <nav className="hidden md:flex items-center gap-4 lg:gap-6">
+            {navItems.map((item) => {
+              const isActive = currentPage === item.page;
+              return (
+                <button
+                  key={item.page}
+                  onClick={() => navigate(item.page, item.hash)}
+                  className={`text-xs font-medium transition-colors tracking-normal cursor-pointer py-1 ${
+                    isActive
+                      ? 'text-slate-950 font-bold border-b-2 border-emerald-500'
+                      : 'text-slate-600 hover:text-slate-950'
+                  }`}
+                >
+                  {item.label}
+                </button>
+              );
+            })}
           </nav>
 
           {/* Desktop Actions */}
@@ -64,7 +77,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenDiagnostic }) => {
             {/* Language Switcher */}
             <button
               onClick={toggleLanguage}
-              className="px-2.5 py-1 text-xs font-mono font-medium text-slate-600 hover:text-slate-950 hover:bg-slate-100 rounded border border-slate-200 transition-all"
+              className="px-2.5 py-1 text-xs font-mono font-medium text-slate-600 hover:text-slate-950 hover:bg-slate-100 rounded border border-slate-200 transition-all cursor-pointer"
               title="Toggle Language"
             >
               {t.nav.langToggle}
@@ -73,7 +86,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenDiagnostic }) => {
             {/* Primary Review CTA */}
             <button
               onClick={onOpenDiagnostic}
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-medium bg-slate-950 text-white hover:bg-slate-800 rounded-md shadow-sm transition-all"
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-medium bg-slate-950 text-white hover:bg-slate-800 rounded-md shadow-2xs transition-all cursor-pointer"
             >
               <span>{t.nav.scheduleReview}</span>
               <ArrowUpRight className="w-3.5 h-3.5 opacity-70" />
@@ -103,15 +116,19 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenDiagnostic }) => {
       {mobileMenuOpen && (
         <div className="md:hidden border-b border-slate-200 bg-white px-4 pt-2 pb-4 space-y-3">
           <nav className="flex flex-col space-y-2">
-            {navLinks.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                onClick={() => setMobileMenuOpen(false)}
-                className="text-sm font-medium text-slate-700 py-1.5 hover:text-slate-950"
+            {navItems.map((item) => (
+              <button
+                key={item.page}
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  navigate(item.page, item.hash);
+                }}
+                className={`text-left text-sm py-1.5 ${
+                  currentPage === item.page ? 'font-bold text-slate-950 text-emerald-600' : 'text-slate-700'
+                }`}
               >
-                {link.label}
-              </a>
+                {item.label}
+              </button>
             ))}
           </nav>
           <div className="pt-2 border-t border-slate-200">

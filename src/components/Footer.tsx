@@ -1,5 +1,6 @@
 import React from 'react';
 import { useApp } from '../context/LanguageContext';
+import { useRouter } from '../context/RouterContext';
 import { SelyronLogo } from './SelyronLogo';
 import { ArrowUpRight } from 'lucide-react';
 
@@ -9,6 +10,7 @@ interface FooterProps {
 
 export const Footer: React.FC<FooterProps> = ({ onOpenDiagnostic }) => {
   const { t } = useApp();
+  const { navigate } = useRouter();
 
   return (
     <footer className="bg-white border-t border-slate-200 py-16 text-slate-600 text-xs">
@@ -36,17 +38,19 @@ export const Footer: React.FC<FooterProps> = ({ onOpenDiagnostic }) => {
           {/* Brand Column */}
           <div className="md:col-span-2">
             <div className="flex items-center gap-2.5 mb-3">
-              <SelyronLogo size={24} />
-              <span className="font-display font-bold text-base text-slate-950 tracking-tight">
-                SELYRON
-              </span>
+              <button onClick={() => navigate('home')} className="flex items-center gap-2 text-left cursor-pointer">
+                <SelyronLogo size={24} />
+                <span className="font-display font-bold text-base text-slate-950 tracking-tight">
+                  SELYRON
+                </span>
+              </button>
             </div>
             <p className="text-slate-600 text-xs leading-relaxed max-w-sm mb-4">
               {t.footer.brandSummary}
             </p>
             <button
               onClick={onOpenDiagnostic}
-              className="inline-flex items-center gap-1.5 font-mono text-xs text-slate-950 font-semibold hover:underline"
+              className="inline-flex items-center gap-1.5 font-mono text-xs text-slate-950 font-semibold hover:underline cursor-pointer"
             >
               <span>{t.nav.scheduleReview}</span>
               <ArrowUpRight className="w-3.5 h-3.5" />
@@ -60,34 +64,60 @@ export const Footer: React.FC<FooterProps> = ({ onOpenDiagnostic }) => {
             </h4>
             <ul className="space-y-2">
               <li>
-                <a href="#runtime" className="hover:text-slate-950 transition-colors">
+                <button 
+                  onClick={() => navigate('home', '#runtime')} 
+                  className="hover:text-slate-950 transition-colors cursor-pointer text-left"
+                >
                   {t.nav.runtime}
-                </a>
+                </button>
               </li>
               <li>
-                <a href="#architecture" className="hover:text-slate-950 transition-colors">
+                <button 
+                  onClick={() => navigate('architecture')} 
+                  className="hover:text-slate-950 transition-colors cursor-pointer text-left"
+                >
                   {t.nav.architecture}
-                </a>
+                </button>
               </li>
               <li>
-                <a href="#scenarios" className="hover:text-slate-950 transition-colors">
-                  {t.nav.scenarios}
-                </a>
+                <button 
+                  onClick={() => navigate('solutions')} 
+                  className="hover:text-slate-950 transition-colors cursor-pointer text-left"
+                >
+                  {t.nav.solutions}
+                </button>
               </li>
               <li>
-                <a href="#specs" className="hover:text-slate-950 transition-colors">
+                <button 
+                  onClick={() => navigate('specs')} 
+                  className="hover:text-slate-950 transition-colors cursor-pointer text-left"
+                >
                   {t.nav.specs}
-                </a>
+                </button>
               </li>
               <li>
-                <a href="#security" className="hover:text-slate-950 transition-colors">
+                <button 
+                  onClick={() => navigate('security')} 
+                  className="hover:text-slate-950 transition-colors cursor-pointer text-left"
+                >
                   {t.nav.security}
-                </a>
+                </button>
               </li>
               <li>
-                <a href="#faq" className="hover:text-slate-950 transition-colors">
-                  {t.nav.faq}
-                </a>
+                <button 
+                  onClick={() => navigate('guarantee')} 
+                  className="hover:text-slate-950 transition-colors cursor-pointer text-left"
+                >
+                  {t.nav.guarantee}
+                </button>
+              </li>
+              <li>
+                <button 
+                  onClick={() => navigate('diagnostic')} 
+                  className="hover:text-slate-950 transition-colors cursor-pointer text-left"
+                >
+                  {t.diagnostic.title}
+                </button>
               </li>
             </ul>
           </div>
@@ -98,11 +128,31 @@ export const Footer: React.FC<FooterProps> = ({ onOpenDiagnostic }) => {
               {t.footer.securityTitle}
             </h4>
             <ul className="space-y-2 font-mono text-[11px] text-slate-600">
-              <li>SOC2 Type II Ready</li>
-              <li>ISO / IEC 27001</li>
-              <li>Sovereign VPC Deployable</li>
-              <li>Zero Data Training Policy</li>
-              <li>Cryptographic Audit Hash</li>
+              <li>
+                <button onClick={() => navigate('security')} className="hover:text-slate-950 cursor-pointer text-left">
+                  SOC2 Type II Ready
+                </button>
+              </li>
+              <li>
+                <button onClick={() => navigate('security')} className="hover:text-slate-950 cursor-pointer text-left">
+                  ISO / IEC 27001
+                </button>
+              </li>
+              <li>
+                <button onClick={() => navigate('security')} className="hover:text-slate-950 cursor-pointer text-left">
+                  Sovereign VPC Deployable
+                </button>
+              </li>
+              <li>
+                <button onClick={() => navigate('security')} className="hover:text-slate-950 cursor-pointer text-left">
+                  Zero Data Training Policy
+                </button>
+              </li>
+              <li>
+                <button onClick={() => navigate('security')} className="hover:text-slate-950 cursor-pointer text-left">
+                  Cryptographic Audit Hash
+                </button>
+              </li>
             </ul>
           </div>
 
@@ -112,9 +162,24 @@ export const Footer: React.FC<FooterProps> = ({ onOpenDiagnostic }) => {
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 font-mono text-[11px] text-slate-500">
           <p>{t.footer.copyright}</p>
           <div className="flex items-center gap-6">
-            <span className="hover:text-slate-800 cursor-pointer">Deterministic Execution Guarantee</span>
-            <span className="hover:text-slate-800 cursor-pointer">SLA Terms</span>
-            <span className="hover:text-slate-800 cursor-pointer">Security Ledger</span>
+            <button 
+              onClick={() => navigate('guarantee')} 
+              className="hover:text-slate-800 cursor-pointer underline-offset-2 hover:underline"
+            >
+              Deterministic Execution Guarantee
+            </button>
+            <button 
+              onClick={() => navigate('guarantee')} 
+              className="hover:text-slate-800 cursor-pointer underline-offset-2 hover:underline"
+            >
+              SLA Terms
+            </button>
+            <button 
+              onClick={() => navigate('security')} 
+              className="hover:text-slate-800 cursor-pointer underline-offset-2 hover:underline"
+            >
+              Security Ledger
+            </button>
           </div>
         </div>
 
