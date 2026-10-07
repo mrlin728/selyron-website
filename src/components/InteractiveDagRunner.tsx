@@ -11,10 +11,7 @@ import {
   ShieldCheck, 
   Terminal, 
   Clock, 
-  Layers, 
-  Lock,
-  ChevronRight,
-  Code2
+  ChevronRight
 } from 'lucide-react';
 
 export const InteractiveDagRunner: React.FC = () => {
@@ -29,7 +26,7 @@ export const InteractiveDagRunner: React.FC = () => {
   const [payloadTab, setPayloadTab] = useState<'ingress' | 'egress'>('ingress');
 
   const scenario = getScenario(selectedScenarioId) || dagScenarios[0];
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Initialize or reset state when scenario changes
   const resetDag = () => {
@@ -276,7 +273,6 @@ export const InteractiveDagRunner: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
           {scenario.nodes.map((node, index) => {
             const status = nodeStatuses[node.id] || 'idle';
-            const isActive = index === activeNodeIndex;
 
             return (
               <div

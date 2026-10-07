@@ -1,58 +1,47 @@
-import React, { useEffect } from 'react';
-import { LanguageProvider, useApp } from './context/LanguageContext';
+import React, { useState } from 'react';
+import { LanguageProvider } from './context/LanguageContext';
 import { Navbar } from './components/Navbar';
+import { HeroSection } from './components/HeroSection';
+import { InteractiveDagRunner } from './components/InteractiveDagRunner';
+import { InfrastructureStack } from './components/InfrastructureStack';
+import { EnterpriseScenarios } from './components/EnterpriseScenarios';
+import { SecurityCompliance } from './components/SecurityCompliance';
 import { Footer } from './components/Footer';
-import { HomePage } from './pages/HomePage';
-import { ServicesPage } from './pages/ServicesPage';
-import { ProjectsPage } from './pages/ProjectsPage';
-import { AboutPage } from './pages/AboutPage';
-import { ContactPage } from './pages/ContactPage';
+import { ArchitectureDiagnosticModal } from './components/ArchitectureDiagnosticModal';
 
 const MainLayout: React.FC = () => {
-  const { page } = useApp();
+  const [isDiagnosticOpen, setIsDiagnosticOpen] = useState<boolean>(false);
 
-  // Scroll to top on page transition
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'instant' });
-  }, [page]);
+  const handleOpenDiagnostic = () => {
+    setIsDiagnosticOpen(true);
+  };
 
-  // Global mouse tracking for specular spotlight cards
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      const target = (e.target as HTMLElement)?.closest('.spotlight-card') as HTMLElement;
-      if (target) {
-        const rect = target.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        target.style.setProperty('--mouse-x', `${x}px`);
-        target.style.setProperty('--mouse-y', `${y}px`);
-      }
-    };
-
-    window.addEventListener('mousemove', handleMouseMove, { passive: true });
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
+  const handleCloseDiagnostic = () => {
+    setIsDiagnosticOpen(false);
+  };
 
   return (
-    <div className="min-h-screen bg-[#07080b] text-[#e6edf3] flex flex-col selection:bg-indigo-600/40 selection:text-white relative bg-cyber-grid">
-      
-      {/* Top Ambient Glow */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-96 bg-gradient-to-b from-indigo-500/10 via-transparent to-transparent opacity-60 pointer-events-none" />
+    <div className="min-h-screen bg-white text-slate-950 flex flex-col selection:bg-slate-900 selection:text-white">
+      {/* Global Minimalist Header */}
+      <Navbar onOpenDiagnostic={handleOpenDiagnostic} />
 
-      {/* Global Navigation */}
-      <Navbar />
-
-      {/* Dynamic Content Viewport */}
-      <main className="flex-grow relative z-10">
-        {page === 'home' && <HomePage />}
-        {page === 'services' && <ServicesPage />}
-        {page === 'projects' && <ProjectsPage />}
-        {page === 'about' && <AboutPage />}
-        {page === 'contact' && <ContactPage />}
+      {/* Main Single-Page Flagship Narrative */}
+      <main className="flex-grow">
+        <HeroSection onOpenDiagnostic={handleOpenDiagnostic} />
+        <InteractiveDagRunner />
+        <InfrastructureStack />
+        <EnterpriseScenarios />
+        <SecurityCompliance />
       </main>
 
-      {/* Global Footer */}
-      <Footer />
+      {/* Swiss Minimalist Footer */}
+      <Footer onOpenDiagnostic={handleOpenDiagnostic} />
+
+      {/* Interactive 3-Step Architecture Diagnostic Modal */}
+      <ArchitectureDiagnosticModal
+        isOpen={isDiagnosticOpen}
+        onClose={handleCloseDiagnostic}
+      />
     </div>
   );
 };

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/LanguageContext';
-import { ShieldCheck, Menu, X, ArrowUpRight, Activity } from 'lucide-react';
+import { Menu, X, ArrowUpRight } from 'lucide-react';
 
 interface NavbarProps {
   onOpenDiagnostic: () => void;
