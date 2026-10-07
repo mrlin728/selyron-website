@@ -4,99 +4,69 @@
 
 @layer base {
   :root {
-    color-scheme: dark;
+    color-scheme: light;
   }
   
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
-    background-color: #07080b;
-    color: #e6edf3;
-    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    background-color: #FFFFFF;
+    color: #09090B;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
   }
 
-  h1, h2, h3, .font-display {
-    font-family: 'Syne', 'Plus Jakarta Sans', sans-serif;
+  h1, h2, h3, h4, .font-display {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    letter-spacing: -0.025em;
   }
 
   code, pre, .font-mono {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
   }
 }
 
-/* Cybernetic Grid & Ambient Canvas Background */
-.bg-cyber-grid {
+/* Precision Hairline Card & Subsurface */
+.hairline-card {
+  background-color: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.hairline-card:hover {
+  border-color: #CBD5E1;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.subsurface-panel {
+  background-color: #F8FAFC;
+  border: 1px solid #E2E8F0;
+}
+
+/* Subtle Engineering Grid Background */
+.bg-subtle-grid {
   background-image: 
-    radial-gradient(rgba(99, 102, 241, 0.08) 1px, transparent 1px),
-    linear-gradient(to right, rgba(255, 255, 255, 0.015) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
-  background-size: 40px 40px, 80px 80px, 80px 80px;
+    linear-gradient(to right, #F1F5F9 1px, transparent 1px),
+    linear-gradient(to bottom, #F1F5F9 1px, transparent 1px);
+  background-size: 32px 32px;
 }
 
-/* Specular Glass Surface */
-.glass-panel {
-  background: rgba(14, 19, 31, 0.6);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.07);
-}
-
-.glass-panel-hover {
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.glass-panel-hover:hover {
-  background: rgba(20, 27, 44, 0.75);
-  border-color: rgba(99, 102, 241, 0.35);
-  transform: translateY(-2px);
-  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7), 0 0 25px -5px rgba(99, 102, 241, 0.15);
-}
-
-/* Subtle Cursor Spotlight Tracking */
-.spotlight-card {
-  position: relative;
-  overflow: hidden;
-}
-.spotlight-card::before {
-  content: '';
-  position: absolute;
-  top: var(--mouse-y, -1000px);
-  left: var(--mouse-x, -1000px);
-  transform: translate(-50%, -50%);
-  width: 400px;
-  height: 400px;
-  background: radial-gradient(circle, rgba(99, 102, 241, 0.12) 0%, transparent 70%);
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  z-index: 1;
-}
-.spotlight-card:hover::before {
-  opacity: 1;
-}
-
-/* Kinetic Pulse & Beam Flow */
-@keyframes flow-beam {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
-}
-
-.animate-flow-beam {
-  animation: flow-beam 2.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-}
-
-/* Custom Scrollbar */
+/* Minimalist Scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 ::-webkit-scrollbar-track {
-  background: #07080b;
+  background: #FFFFFF;
 }
 ::-webkit-scrollbar-thumb {
-  background: #1c2538;
-  border-radius: 3px;
+  background: #CBD5E1;
+  border-radius: 2px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #313f5c;
+  background: #94A3B8;
 }

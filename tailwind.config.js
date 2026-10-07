@@ -4,44 +4,42 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
-  darkMode: 'class',
   theme: {
     extend: {
       colors: {
-        obsidian: {
-          950: '#07090e',
-          900: '#0b0f17',
-          850: '#111722',
-          800: '#172030',
-          700: '#233047',
-          600: '#384763',
-          500: '#55698a',
-          400: '#8ba0c2',
-          300: '#c5d3ea',
-          200: '#e2ebf7',
-          100: '#f1f5fb',
-        },
-        cyber: {
-          blue: '#3b82f6',
-          cyan: '#06b6d4',
-          emerald: '#10b981',
-          violet: '#8b5cf6',
-          amber: '#f59e0b',
+        canvas: '#FFFFFF',
+        subsurface: '#F8FAFC',
+        surface: '#FFFFFF',
+        'surface-elevated': '#FFFFFF',
+        hairline: '#E2E8F0',
+        'hairline-strong': '#CBD5E1',
+        primary: '#09090B',
+        secondary: '#52525B',
+        muted: '#A1A1AA',
+        accent: {
+          emerald: '#10B981',
+          amber: '#F59E0B',
+          rose: '#EF4444',
+          slate: '#64748B',
         }
       },
       fontFamily: {
-        sans: ['"Plus Jakarta Sans"', 'Inter', 'system-ui', '-apple-system', 'sans-serif'],
-        display: ['"Syne"', '"Plus Jakarta Sans"', 'sans-serif'],
+        sans: ['"Inter"', '"Plus Jakarta Sans"', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'sans-serif'],
+        display: ['"Inter"', '"Plus Jakarta Sans"', 'sans-serif'],
         mono: ['"JetBrains Mono"', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace']
       },
       animation: {
-        'pulse-subtle': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-        'glow-line': 'glowLine 3s ease-in-out infinite',
+        'status-pulse': 'statusPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'subtle-pulse': 'subtlePulse 3s ease-in-out infinite',
       },
       keyframes: {
-        glowLine: {
-          '0%, 100%': { opacity: 0.3 },
-          '50%': { opacity: 0.8 },
+        statusPulse: {
+          '0%, 100%': { opacity: '1', transform: 'scale(1)' },
+          '50%': { opacity: '0.4', transform: 'scale(0.95)' },
+        },
+        subtlePulse: {
+          '0%, 100%': { opacity: '0.8' },
+          '50%': { opacity: '1' },
         }
       }
     },
