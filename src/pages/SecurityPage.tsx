@@ -5,9 +5,10 @@ import {
   ShieldCheck, 
   RefreshCw, 
   CheckCircle2, 
-  Download, 
-  Check
+  Check,
+  Send
 } from 'lucide-react';
+import { submitInquiryToFormSubmit } from '../utils/formSubmit';
 
 export const SecurityPage: React.FC = () => {
   const { t } = useApp();
@@ -24,7 +25,12 @@ export const SecurityPage: React.FC = () => {
   }, null, 2));
   const [computedHash, setComputedHash] = useState('');
   const [isVerifying, setIsVerifying] = useState(false);
-  const [downloadRequested, setDownloadRequested] = useState(false);
+
+  // Compliance package form state
+  const [complianceEmail, setComplianceEmail] = useState('');
+  const [complianceCompany, setComplianceCompany] = useState('');
+  const [isSubmittingCompliance, setIsSubmittingCompliance] = useState(false);
+  const [complianceSubmitted, setComplianceSubmitted] = useState(false);
 
   // Compute real SHA-256 hash using Web Crypto API
   const calculateSha256 = async (input: string): Promise<string> => {
@@ -65,9 +71,23 @@ export const SecurityPage: React.FC = () => {
     }, null, 2));
   };
 
-  const handleDownloadPackage = () => {
-    setDownloadRequested(true);
-    setTimeout(() => setDownloadRequested(false), 4000);
+  const handleComplianceSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!complianceEmail) return;
+    setIsSubmittingCompliance(true);
+    await submitInquiryToFormSubmit({
+      source: "Security Portal - Compliance Package Request",
+      workEmail: complianceEmail,
+      companyName: complianceCompany || "Not specified",
+      notes: "Requested SOC 2 Type II attestation report and ISO 27001 compliance documentation.",
+    });
+    setIsSubmittingCompliance(false);
+    setComplianceSubmitted(true);
+    setTimeout(() => {
+      setComplianceSubmitted(false);
+      setComplianceEmail('');
+      setComplianceCompany('');
+    }, 5000);
   };
 
   const complianceBadges = [
@@ -124,7 +144,7 @@ export const SecurityPage: React.FC = () => {
 
             <button
               onClick={handleSimulateNew}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-white font-mono text-xs rounded border border-slate-700 transition-all"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-white font-mono text-xs rounded border border-slate-700 transition-all cursor-pointer"
             >
               <RefreshCw className="w-3.5 h-3.5" />
               <span>{t.pages.securityPage.toolSimulate}</span>
@@ -268,24 +288,57 @@ export const SecurityPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Whitepaper & Compliance Package */}
-        <div className="p-8 sm:p-12 bg-slate-50 border border-slate-200 rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
-          <div>
-            <h3 className="font-display text-xl font-bold text-slate-950 mb-1">
-              {t.pages.securityPage.whitepaperTitle}
-            </h3>
-            <p className="text-xs text-slate-600 max-w-xl">
-              {t.pages.securityPage.whitepaperDesc}
-            </p>
-          </div>
+        {/* Whitepaper & Compliance Inbound Form */}
+        <div className="p-8 sm:p-12 bg-slate-50 border border-slate-200 rounded-xl">
+          <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
+            <div className="max-w-xl">
+              <h3 className="font-display text-xl font-bold text-slate-950 mb-1">
+                {t.pages.securityPage.whitepaperTitle}
+              </h3>
+              <p className="text-xs text-slate-600 leading-relaxed mb-3">
+                {t.pages.securityPage.whitepaperDesc}
+              </p>
+              <div className="flex items-center gap-2 text-[11px] font-mono text-emerald-600">
+                <CheckCircle2 className="w-3.5 h-3.5" />
+                <span>Confidential NDA & Security Desk forwarding</span>
+              </div>
+            </div>
 
-          <button
-            onClick={handleDownloadPackage}
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-slate-950 text-white font-medium text-xs rounded hover:bg-slate-800 transition-all shadow-sm shrink-0"
-          >
-            {downloadRequested ? <Check className="w-4 h-4 text-emerald-400" /> : <Download className="w-4 h-4" />}
-            <span>{downloadRequested ? "Request Dispatched to Security Desk" : t.pages.securityPage.whitepaperBtn}</span>
-          </button>
+            <div className="w-full lg:w-auto shrink-0">
+              {complianceSubmitted ? (
+                <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-lg text-emerald-900 flex items-center gap-2.5 font-mono text-xs">
+                  <Check className="w-4 h-4 text-emerald-600" />
+                  <span>Compliance package request dispatched to security desk.</span>
+                </div>
+              ) : (
+                <form onSubmit={handleComplianceSubmit} className="flex flex-col sm:flex-row gap-2.5">
+                  <input
+                    type="email"
+                    required
+                    placeholder="ciso@enterprise.com"
+                    value={complianceEmail}
+                    onChange={(e) => setComplianceEmail(e.target.value)}
+                    className="px-3.5 py-2 text-xs font-mono bg-white border border-slate-300 rounded focus:outline-hidden focus:border-slate-900 sm:w-56"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Organization (Optional)"
+                    value={complianceCompany}
+                    onChange={(e) => setComplianceCompany(e.target.value)}
+                    className="px-3.5 py-2 text-xs font-mono bg-white border border-slate-300 rounded focus:outline-hidden focus:border-slate-900 sm:w-44"
+                  />
+                  <button
+                    type="submit"
+                    disabled={isSubmittingCompliance}
+                    className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-slate-950 text-white font-medium text-xs rounded hover:bg-slate-800 shadow-2xs transition-all disabled:opacity-50 cursor-pointer"
+                  >
+                    <Send className="w-3.5 h-3.5" />
+                    <span>{isSubmittingCompliance ? "Sending..." : t.pages.securityPage.whitepaperBtn}</span>
+                  </button>
+                </form>
+              )}
+            </div>
+          </div>
         </div>
 
       </div>

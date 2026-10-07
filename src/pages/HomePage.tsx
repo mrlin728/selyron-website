@@ -88,7 +88,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onOpenDiagnostic }) => {
             <span>Contractually Backed By The Selyron Master SLA</span>
           </div>
           <p className="text-xs text-slate-500 max-w-xl mx-auto mb-4">
-            Every pipeline run on Selyron is indemnified against un-gated execution with a 100% service fee refund plus liquidated damages guarantee.
+            Every pipeline run on Selyron is mathematically verified against un-gated execution, backed by strict 99.992% uptime SLA and forward-deployed incident response.
           </p>
           <button
             onClick={() => navigate('guarantee')}

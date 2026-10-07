@@ -8,11 +8,13 @@ import {
   ArrowLeft, 
   Send
 } from 'lucide-react';
+import { submitInquiryToFormSubmit } from '../utils/formSubmit';
 
 export const DiagnosticPage: React.FC = () => {
   const { t } = useApp();
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [formData, setFormData] = useState<DiagnosticFormData>({
     friction: 'friction1',
     deploymentEnv: 'env1',
@@ -35,9 +37,15 @@ export const DiagnosticPage: React.FC = () => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.workEmail || !formData.companyName) return;
+    setIsSubmitting(true);
+    await submitInquiryToFormSubmit({
+      source: "Diagnostic Page Full Assessment",
+      ...formData,
+    });
+    setIsSubmitting(false);
     setIsSubmitted(true);
   };
 
@@ -316,10 +324,11 @@ export const DiagnosticPage: React.FC = () => {
 
                     <button
                       type="submit"
-                      className="inline-flex items-center gap-2 px-6 py-2.5 bg-slate-950 text-white text-xs font-semibold rounded hover:bg-slate-800 transition-all shadow-sm"
+                      disabled={isSubmitting}
+                      className="inline-flex items-center gap-2 px-6 py-2.5 bg-slate-950 text-white text-xs font-semibold rounded hover:bg-slate-800 transition-all shadow-sm disabled:opacity-50"
                     >
                       <Send className="w-3.5 h-3.5" />
-                      <span>{t.diagnostic.submit}</span>
+                      <span>{isSubmitting ? t.diagnostic.submitting : t.diagnostic.submit}</span>
                     </button>
                   </div>
                 </div>

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useApp } from '../context/LanguageContext';
 import { DiagnosticFormData } from '../types';
 import { X, CheckCircle2, ArrowRight, ArrowLeft, Send } from 'lucide-react';
+import { submitInquiryToFormSubmit } from '../utils/formSubmit';
 
 interface DiagnosticModalProps {
   isOpen: boolean;
@@ -12,6 +13,7 @@ export const ArchitectureDiagnosticModal: React.FC<DiagnosticModalProps> = ({ is
   const { t } = useApp();
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [formData, setFormData] = useState<DiagnosticFormData>({
     friction: 'friction1',
     deploymentEnv: 'env1',
@@ -36,9 +38,15 @@ export const ArchitectureDiagnosticModal: React.FC<DiagnosticModalProps> = ({ is
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.workEmail || !formData.companyName) return;
+    setIsSubmitting(true);
+    await submitInquiryToFormSubmit({
+      source: "Pre-Flight Architecture Assessment Modal",
+      ...formData,
+    });
+    setIsSubmitting(false);
     setIsSubmitted(true);
   };
 
@@ -349,10 +357,11 @@ export const ArchitectureDiagnosticModal: React.FC<DiagnosticModalProps> = ({ is
 
                     <button
                       type="submit"
-                      className="inline-flex items-center gap-2 px-5 py-2.5 text-xs font-medium bg-slate-950 text-white rounded-md hover:bg-slate-800 transition-all shadow-sm"
+                      disabled={isSubmitting}
+                      className="inline-flex items-center gap-2 px-5 py-2.5 text-xs font-medium bg-slate-950 text-white rounded-md hover:bg-slate-800 transition-all shadow-sm disabled:opacity-50"
                     >
                       <Send className="w-3.5 h-3.5" />
-                      <span>{t.diagnostic.submit}</span>
+                      <span>{isSubmitting ? t.diagnostic.submitting : t.diagnostic.submit}</span>
                     </button>
                   </div>
                 </form>

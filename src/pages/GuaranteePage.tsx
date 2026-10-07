@@ -9,8 +9,9 @@ import {
   Zap, 
   Lock, 
   Check, 
-  Download
+  Send
 } from 'lucide-react';
+import { submitInquiryToFormSubmit } from '../utils/formSubmit';
 
 interface GuaranteePageProps {
   onOpenDiagnostic: () => void;
@@ -18,7 +19,10 @@ interface GuaranteePageProps {
 
 export const GuaranteePage: React.FC<GuaranteePageProps> = ({ onOpenDiagnostic }) => {
   const { t } = useApp();
-  const [downloadMsa, setDownloadMsa] = useState(false);
+  const [msaEmail, setMsaEmail] = useState('');
+  const [msaCompany, setMsaCompany] = useState('');
+  const [isSubmittingMsa, setIsSubmittingMsa] = useState(false);
+  const [msaSubmitted, setMsaSubmitted] = useState(false);
 
   const commitments = [
     {
@@ -48,9 +52,9 @@ export const GuaranteePage: React.FC<GuaranteePageProps> = ({ onOpenDiagnostic }
   ];
 
   const creditTiers = [
-    { uptime: t.pages.guarantee.tier1Uptime, credit: t.pages.guarantee.tier1Credit, action: "Automatic invoice credit applied next billing cycle" },
-    { uptime: t.pages.guarantee.tier2Uptime, credit: t.pages.guarantee.tier2Credit, action: "Expedited executive review and operational root-cause analysis" },
-    { uptime: t.pages.guarantee.tier3Uptime, credit: t.pages.guarantee.tier3Credit, action: "Customer option for immediate contract termination with zero penalty" }
+    { uptime: t.pages.guarantee.tier1Uptime, action: t.pages.guarantee.tier1Credit, response: "Dedicated engineering root-cause report delivered within 24 hours" },
+    { uptime: t.pages.guarantee.tier2Uptime, action: t.pages.guarantee.tier2Credit, response: "Principal Architect on-site investigation and prioritized kernel patch" },
+    { uptime: t.pages.guarantee.tier3Uptime, action: t.pages.guarantee.tier3Credit, response: "Executive war room, continuous hot standby, and customer architectural audit" }
   ];
 
   const supportTiers = [
@@ -73,6 +77,25 @@ export const GuaranteePage: React.FC<GuaranteePageProps> = ({ onOpenDiagnostic }
       personnel: "Tier-2 Operations Engineering"
     }
   ];
+
+  const handleMsaSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!msaEmail) return;
+    setIsSubmittingMsa(true);
+    await submitInquiryToFormSubmit({
+      source: "Guarantee Page - MSA Template Request",
+      workEmail: msaEmail,
+      companyName: msaCompany || "Not specified",
+      notes: "Requested Master Services Agreement template and SLA terms.",
+    });
+    setIsSubmittingMsa(false);
+    setMsaSubmitted(true);
+    setTimeout(() => {
+      setMsaSubmitted(false);
+      setMsaEmail('');
+      setMsaCompany('');
+    }, 5000);
+  };
 
   return (
     <div className="bg-white text-slate-950 pb-20">
@@ -102,15 +125,15 @@ export const GuaranteePage: React.FC<GuaranteePageProps> = ({ onOpenDiagnostic }
           <div className="pt-6 border-t border-slate-800 flex flex-wrap items-center gap-6 font-mono text-xs text-slate-400">
             <div className="flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-              <span>100% Service Fee Refund</span>
+              <span>Mathematical Proof of State Halting</span>
             </div>
             <div className="flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-              <span>Up to $1,000,000 Liquidated Damages</span>
+              <span>Zero Un-Gated Execution Warranty</span>
             </div>
             <div className="flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-              <span>Direct Enterprise MSA Incorporation</span>
+              <span>Direct Enterprise MSA SLA Incorporation</span>
             </div>
           </div>
         </div>
@@ -149,11 +172,11 @@ export const GuaranteePage: React.FC<GuaranteePageProps> = ({ onOpenDiagnostic }
           </div>
         </div>
 
-        {/* Service Credit Schedule Table */}
+        {/* Operational Escalation Schedule Table */}
         <div className="mb-20">
           <div className="mb-6">
             <span className="font-mono text-xs text-slate-500 uppercase tracking-wider font-semibold">
-              FINANCIAL REMEDIES
+              OPERATIONAL ESCALATION
             </span>
             <h2 className="text-2xl font-display font-bold text-slate-950 mt-1">
               {t.pages.guarantee.creditTiersTitle}
@@ -165,16 +188,16 @@ export const GuaranteePage: React.FC<GuaranteePageProps> = ({ onOpenDiagnostic }
               <thead className="bg-slate-50 border-b border-slate-200 text-slate-500">
                 <tr>
                   <th className="py-3 px-4 font-semibold">Monthly Availability Interval</th>
-                  <th className="py-3 px-4 font-semibold">Credit Entitlement</th>
-                  <th className="py-3 px-4 font-semibold">Operational Action</th>
+                  <th className="py-3 px-4 font-semibold">Escalation Action & Commitment</th>
+                  <th className="py-3 px-4 font-semibold">Forward-Deployed Response</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 bg-white">
                 {creditTiers.map((tier, idx) => (
                   <tr key={idx} className="hover:bg-slate-50/70">
                     <td className="py-3.5 px-4 font-bold text-slate-950">{tier.uptime}</td>
-                    <td className="py-3.5 px-4 font-semibold text-emerald-600">{tier.credit}</td>
-                    <td className="py-3.5 px-4 text-slate-600">{tier.action}</td>
+                    <td className="py-3.5 px-4 font-semibold text-emerald-600">{tier.action}</td>
+                    <td className="py-3.5 px-4 text-slate-600">{tier.response}</td>
                   </tr>
                 ))}
               </tbody>
@@ -220,35 +243,63 @@ export const GuaranteePage: React.FC<GuaranteePageProps> = ({ onOpenDiagnostic }
           </div>
         </div>
 
-        {/* Download MSA & Review CTA */}
-        <div className="p-8 sm:p-12 bg-slate-50 border border-slate-200 rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
-          <div>
-            <h3 className="font-display text-xl font-bold text-slate-950 mb-1">
-              Request Master Services Agreement (MSA) Template
-            </h3>
-            <p className="text-xs text-slate-600 max-w-xl">
-              Includes complete legal terms, formal mathematical proof of state convergence, and custom enterprise liability schedules.
-            </p>
-          </div>
+        {/* Download MSA & Inbound Request Form */}
+        <div className="p-8 sm:p-12 bg-slate-50 border border-slate-200 rounded-xl">
+          <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
+            <div className="max-w-xl">
+              <h3 className="font-display text-xl font-bold text-slate-950 mb-1">
+                Request Master Services Agreement (MSA) Template
+              </h3>
+              <p className="text-xs text-slate-600 leading-relaxed mb-3">
+                Includes complete legal terms, formal mathematical proof of state convergence, and enterprise forward-deployed delivery schedules.
+              </p>
+              <div className="flex items-center gap-2 text-[11px] font-mono text-emerald-600">
+                <CheckCircle2 className="w-3.5 h-3.5" />
+                <span>Direct inquiry dispatch to Legal & Enterprise Desk</span>
+              </div>
+            </div>
 
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => {
-                setDownloadMsa(true);
-                setTimeout(() => setDownloadMsa(false), 3000);
-              }}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-800 font-mono text-xs rounded hover:border-slate-300 shadow-2xs"
-            >
-              {downloadMsa ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Download className="w-3.5 h-3.5" />}
-              <span>{downloadMsa ? "MSA Dispatched to Legal" : "Download Sample MSA"}</span>
-            </button>
-
-            <button
-              onClick={onOpenDiagnostic}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-slate-950 text-white font-medium text-xs rounded hover:bg-slate-800 shadow-sm"
-            >
-              <span>Schedule Architecture Review</span>
-            </button>
+            <div className="w-full lg:w-auto shrink-0">
+              {msaSubmitted ? (
+                <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-lg text-emerald-900 flex items-center gap-2.5 font-mono text-xs">
+                  <Check className="w-4 h-4 text-emerald-600" />
+                  <span>MSA package dispatched to your work email.</span>
+                </div>
+              ) : (
+                <form onSubmit={handleMsaSubmit} className="flex flex-col sm:flex-row gap-2.5">
+                  <input
+                    type="email"
+                    required
+                    placeholder="name@enterprise.com"
+                    value={msaEmail}
+                    onChange={(e) => setMsaEmail(e.target.value)}
+                    className="px-3.5 py-2 text-xs font-mono bg-white border border-slate-300 rounded focus:outline-hidden focus:border-slate-900 sm:w-56"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Company (Optional)"
+                    value={msaCompany}
+                    onChange={(e) => setMsaCompany(e.target.value)}
+                    className="px-3.5 py-2 text-xs font-mono bg-white border border-slate-300 rounded focus:outline-hidden focus:border-slate-900 sm:w-44"
+                  />
+                  <button
+                    type="submit"
+                    disabled={isSubmittingMsa}
+                    className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-slate-950 text-white font-medium text-xs rounded hover:bg-slate-800 shadow-2xs transition-all disabled:opacity-50 cursor-pointer"
+                  >
+                    <Send className="w-3.5 h-3.5" />
+                    <span>{isSubmittingMsa ? "Sending..." : "Request MSA"}</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={onOpenDiagnostic}
+                    className="inline-flex items-center justify-center px-3.5 py-2 border border-slate-300 hover:border-slate-400 text-slate-700 font-mono text-xs rounded bg-white transition-all cursor-pointer"
+                  >
+                    <span>Schedule Review</span>
+                  </button>
+                </form>
+              )}
+            </div>
           </div>
         </div>
 
