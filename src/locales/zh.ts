@@ -6,6 +6,7 @@ export const zh = {
     scenarios: "客户场景",
     security: "安全合规",
     specs: "技术规格",
+    faq: "常见问题",
     scheduleReview: "预约架构诊断",
     langToggle: "EN",
     systemActive: "核心运行就绪 · v2.4"
@@ -15,7 +16,10 @@ export const zh = {
     title: "企业核心业务的确定性自动化基础设施",
     subtitle: "高可靠、可审计、状态持久化的企业级自动化基础设施。统一跨遗留 ERP、多模型决策网关与分布式业务系统的复杂流转，实现零隐性故障。",
     startAssessment: "启动架构评估",
-    inspectRuntime: "查看 DAG 实时演练"
+    inspectRuntime: "查看 DAG 实时演练",
+    cliPill: "CLI 评估命令",
+    copyCommand: "curl -fsSL https://get.selyron.com/eval | sh",
+    copiedCommand: "命令已复制到剪贴板！"
   },
   telemetry: {
     determinism: "99.99% 执行确定性",
@@ -46,6 +50,8 @@ export const zh = {
     retryCount: "重试次数",
     nodes: "节点列表",
     scenarioCompleted: "流水线成功执行 · 全部节点原子提交",
+    viewVisual: "可视化有向图 (DAG)",
+    viewCode: "声明式工作流源码",
     scenarios: {
       s1: {
         tab: "01. 单据摄入与 ERP 核对",
@@ -145,6 +151,61 @@ export const zh = {
       title: "企业级 SLA 与容灾机制",
       desc: "提供 99.99% 可用性 SLA，支持跨可用区状态机热备故障切换、确定性事件重放与专属高级工程师支持。",
       tag: "机构级可靠性"
+    }
+  },
+  specs: {
+    eyebrow: "05 // 系统技术规格与连接器",
+    title: "协议拓扑矩阵与运行时指标",
+    subtitle: "硬核工程边界指标、确定性事件重放保证，以及经认证的企业级生产连接器。",
+    connectorsTitle: "认证企业级连接器矩阵",
+    benchmarksTitle: "确定性运行时基准指标",
+    codeTitle: "声明式自动化工作流代码定义",
+    copyCode: "复制代码片段",
+    copied: "已复制到剪贴板！",
+    b1: {
+      label: "P99 状态转移延迟",
+      value: "< 42 ms",
+      desc: "内存级分布式预写日志 (WAL) 快照"
+    },
+    b2: {
+      label: "吞吐水平伸缩能力",
+      value: "50,000+ req/s",
+      desc: "无状态分布式 Worker 执行集群"
+    },
+    b3: {
+      label: "Token 缓存命中率",
+      value: "84.2%",
+      desc: "高频重复请求的语义 KV 缓存"
+    },
+    b4: {
+      label: "单个 Worker 内存占用",
+      value: "< 14 MB",
+      desc: "轻量级沙箱化容器隔离"
+    }
+  },
+  faq: {
+    eyebrow: "06 // 常见架构与商务问答",
+    title: "企业架构与工程深度解答",
+    subtitle: "面向 CTO、合规总监与前向部署工程师的常见核心技术与落地解答。",
+    q1: {
+      q: "Selyron 如何在关键业务中消除大模型的不确定性与幻觉？",
+      a: "Selyron 将“智能推理”与“状态转移”严格解耦：大语言模型仅输出结构化 JSON 提案，必须通过严格的 Schema 模式校验、确定性不变量断言与预置业务规则门禁后，状态方可提交至核心系统。"
+    },
+    q2: {
+      q: "Selyron 是否支持在完全断网的涉密物理隔离或私有云中部署？",
+      a: "完全支持。Selyron 可 100% 部署在企业专属机房或私有 VPC。在物理隔离模式下，智能网关将流量自动调度至内部 GPU 集群上通过 vLLM 或 Ollama 运行的开源模型（如 DeepSeek-R1、Qwen 2.5、Llama 3.3）。"
+    },
+    q3: {
+      q: "人工审批介入 (HITL) 如何与企业现有的权限与身份系统打通？",
+      a: "Selyron 审批节点可无缝挂接企业 SAML 2.0 / OIDC 身份认证体系，或通过飞书/钉钉/企业微信机器人安全签名卡片推送。在审批未完成前，事务状态安全冻结在数据库中，直到授权人员完成签署。"
+    },
+    q4: {
+      q: "如何对接没有现代 Webhook 接口的传统 SAP、金蝶等老旧 ERP？",
+      a: "Selyron 内置针对 SAP 的原生 RFC/BAPI 协议适配器、ODBC/JDBC 事务连接器以及安全 SFTP 批处理监听器，在传统协议上封装分布式幂等锁与两阶段提交。"
+    },
+    q5: {
+      q: "Selyron 与消费级工具（如 Zapier、Make）的本质区别是什么？",
+      a: "消费级工具基于线性“尽力而为”脚本，在遇到偶发网络故障或跨系统不一致时容易发生隐性静默失败。Selyron 是分布式有向无环图 (DAG) 状态机，具备事务持久化、指数退避重试、密码学审计链与企业级零数据留存保障。"
     }
   },
   diagnostic: {

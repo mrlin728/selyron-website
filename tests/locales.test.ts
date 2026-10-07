@@ -16,7 +16,7 @@ function getKeys(obj: Record<string, any>, prefix = ''): string[] {
 }
 
 describe('Locale Parity and B2B Infrastructure Content', () => {
-  it('should include all required B2B infrastructure top-level sections', () => {
+  it('should include all required B2B infrastructure top-level sections including specs and faq', () => {
     const requiredSections = [
       'nav',
       'hero',
@@ -25,6 +25,8 @@ describe('Locale Parity and B2B Infrastructure Content', () => {
       'tiers',
       'scenarios',
       'security',
+      'specs',
+      'faq',
       'diagnostic',
       'footer'
     ];

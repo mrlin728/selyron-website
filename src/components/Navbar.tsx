@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/LanguageContext';
+import { SelyronLogo } from './SelyronLogo';
 import { Menu, X, ArrowUpRight } from 'lucide-react';
 
 interface NavbarProps {
@@ -18,7 +19,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenDiagnostic }) => {
     { label: t.nav.runtime, href: '#runtime' },
     { label: t.nav.architecture, href: '#architecture' },
     { label: t.nav.scenarios, href: '#scenarios' },
+    { label: t.nav.specs, href: '#specs' },
     { label: t.nav.security, href: '#security' },
+    { label: t.nav.faq, href: '#faq' },
   ];
 
   return (
@@ -28,10 +31,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenDiagnostic }) => {
           
           {/* Brand Logo & Telemetry Indicator */}
           <div className="flex items-center gap-3">
-            <a href="#" className="flex items-center gap-2 group">
-              <div className="w-7 h-7 bg-slate-950 text-white rounded flex items-center justify-center font-mono font-bold text-sm tracking-tighter shadow-sm">
-                S
-              </div>
+            <a href="#" className="flex items-center gap-2.5 group">
+              <SelyronLogo size={28} />
               <span className="font-display font-bold text-lg text-slate-950 tracking-tight">
                 SELYRON
               </span>
@@ -46,7 +47,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenDiagnostic }) => {
           </div>
 
           {/* Desktop Navigation Anchors */}
-          <nav className="hidden md:flex items-center gap-6">
+          <nav className="hidden md:flex items-center gap-5 lg:gap-6">
             {navLinks.map((link) => (
               <a
                 key={link.href}

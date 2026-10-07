@@ -5,7 +5,9 @@ import { HeroSection } from './components/HeroSection';
 import { InteractiveDagRunner } from './components/InteractiveDagRunner';
 import { InfrastructureStack } from './components/InfrastructureStack';
 import { EnterpriseScenarios } from './components/EnterpriseScenarios';
+import { ProtocolSpecs } from './components/ProtocolSpecs';
 import { SecurityCompliance } from './components/SecurityCompliance';
+import { FaqSection } from './components/FaqSection';
 import { Footer } from './components/Footer';
 import { ArchitectureDiagnosticModal } from './components/ArchitectureDiagnosticModal';
 
@@ -22,7 +24,7 @@ const MainLayout: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-white text-slate-950 flex flex-col selection:bg-slate-900 selection:text-white">
-      {/* Global Minimalist Header */}
+      {/* Global Minimalist Header with Selyron Brand Icon */}
       <Navbar onOpenDiagnostic={handleOpenDiagnostic} />
 
       {/* Main Single-Page Flagship Narrative */}
@@ -31,10 +33,12 @@ const MainLayout: React.FC = () => {
         <InteractiveDagRunner />
         <InfrastructureStack />
         <EnterpriseScenarios />
+        <ProtocolSpecs />
         <SecurityCompliance />
+        <FaqSection onOpenDiagnostic={handleOpenDiagnostic} />
       </main>
 
-      {/* Swiss Minimalist Footer */}
+      {/* Swiss Minimalist Footer with Selyron Brand Icon */}
       <Footer onOpenDiagnostic={handleOpenDiagnostic} />
 
       {/* Interactive 3-Step Architecture Diagnostic Modal */}

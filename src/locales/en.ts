@@ -6,6 +6,7 @@ export const en = {
     scenarios: "Use Cases",
     security: "Trust & Security",
     specs: "Specs",
+    faq: "FAQ",
     scheduleReview: "Schedule Architecture Review",
     langToggle: "中文",
     systemActive: "Core Operational · v2.4"
@@ -15,7 +16,10 @@ export const en = {
     title: "Deterministic Automation for the Enterprise Core",
     subtitle: "High-reliability, auditable, state-persistent automation infrastructure. Unifying legacy ERPs, multi-model gateways, and distributed operations with zero silent failures.",
     startAssessment: "Start Architecture Assessment",
-    inspectRuntime: "Inspect Live DAG Engine"
+    inspectRuntime: "Inspect Live DAG Engine",
+    cliPill: "CLI PREVIEW",
+    copyCommand: "curl -fsSL https://get.selyron.com/eval | sh",
+    copiedCommand: "Command copied to clipboard!"
   },
   telemetry: {
     determinism: "99.99% Execution Determinism",
@@ -46,6 +50,8 @@ export const en = {
     retryCount: "Retries",
     nodes: "Nodes",
     scenarioCompleted: "Pipeline Succeeded · All Nodes Committed",
+    viewVisual: "Visual DAG Graph",
+    viewCode: "Workflow Definition Code",
     scenarios: {
       s1: {
         tab: "01. Document Ingestion & ERP Sync",
@@ -145,6 +151,61 @@ export const en = {
       title: "Enterprise SLA & Disaster Recovery",
       desc: "99.99% availability SLA with multi-region state machine failover, deterministic replay capability, and 24/7 dedicated engineering support.",
       tag: "INSTITUTIONAL GRADE"
+    }
+  },
+  specs: {
+    eyebrow: "05 // SYSTEM SPECIFICATIONS & CONNECTORS",
+    title: "Protocol Matrix & Runtime Specifications",
+    subtitle: "Hard engineering bounds, deterministic replay guarantees, and certified enterprise integration connectors.",
+    connectorsTitle: "Certified Enterprise Connectors",
+    benchmarksTitle: "Deterministic Runtime Benchmarks",
+    codeTitle: "Declarative Workflow Definition",
+    copyCode: "Copy Snippet",
+    copied: "Copied to Clipboard!",
+    b1: {
+      label: "P99 State Transition",
+      value: "< 42 ms",
+      desc: "In-memory distributed WAL checkpointing"
+    },
+    b2: {
+      label: "Throughput Scalability",
+      value: "50,000+ req/s",
+      desc: "Stateless distributed execution clusters"
+    },
+    b3: {
+      label: "Token Cache Hit Rate",
+      value: "84.2%",
+      desc: "Semantic KV cache on recurring inputs"
+    },
+    b4: {
+      label: "Memory Footprint",
+      value: "< 14 MB",
+      desc: "Lightweight isolated worker sandbox"
+    }
+  },
+  faq: {
+    eyebrow: "06 // FREQUENTLY ASKED QUESTIONS",
+    title: "Enterprise Architecture Inquiries",
+    subtitle: "Transparent technical answers to core questions asked by CTOs, compliance officers, and forward-deployed engineers.",
+    q1: {
+      q: "How does Selyron eliminate non-deterministic LLM hallucinations in critical pipelines?",
+      a: "Selyron separates reasoning from state transition: LLMs only produce structured JSON proposals that must pass strict schema validation, deterministic invariant assertions, and business rule gates before state changes are committed."
+    },
+    q2: {
+      q: "Can Selyron run in a fully air-gapped sovereign VPC without internet access?",
+      a: "Yes. Selyron can be deployed 100% on-premises or in an isolated VPC. In air-gapped mode, intelligence routing targets local private foundation model weights (DeepSeek-R1, Qwen 2.5, Llama 3.3) running via vLLM or Ollama on internal GPU clusters."
+    },
+    q3: {
+      q: "How does Human-in-the-Loop (HITL) integrate with our existing enterprise permissions?",
+      a: "Selyron maps approval nodes to existing enterprise identity systems via SAML 2.0 / OIDC, Feishu / Slack webhook bots, or custom HSM cryptographic keys. When suspended, state is frozen in the database until an authenticated operator signs off."
+    },
+    q4: {
+      q: "How does Selyron interface with legacy ERPs like SAP or Kingdee that lack modern webhooks?",
+      a: "Selyron includes native RFC/BAPI connectors for SAP, ODBC/JDBC transactional adapters, and secure SFTP file drop listeners, executing two-phase commits with idempotency locks."
+    },
+    q5: {
+      q: "What is the difference between Selyron and consumer tools like Zapier or Make?",
+      a: "Consumer tools rely on linear best-effort scripts that fail silently during transient network errors. Selyron provides a stateful DAG orchestrator with distributed locking, exponential backoff with jitter, cryptographic audit trails, and zero-data retention security."
     }
   },
   diagnostic: {

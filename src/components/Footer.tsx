@@ -1,5 +1,6 @@
 import React from 'react';
 import { useApp } from '../context/LanguageContext';
+import { SelyronLogo } from './SelyronLogo';
 import { ArrowUpRight } from 'lucide-react';
 
 interface FooterProps {
@@ -34,10 +35,8 @@ export const Footer: React.FC<FooterProps> = ({ onOpenDiagnostic }) => {
           
           {/* Brand Column */}
           <div className="md:col-span-2">
-            <div className="flex items-center gap-2 mb-3">
-              <div className="w-6 h-6 bg-slate-950 text-white rounded flex items-center justify-center font-mono font-bold text-xs">
-                S
-              </div>
+            <div className="flex items-center gap-2.5 mb-3">
+              <SelyronLogo size={24} />
               <span className="font-display font-bold text-base text-slate-950 tracking-tight">
                 SELYRON
               </span>
@@ -76,8 +75,18 @@ export const Footer: React.FC<FooterProps> = ({ onOpenDiagnostic }) => {
                 </a>
               </li>
               <li>
+                <a href="#specs" className="hover:text-slate-950 transition-colors">
+                  {t.nav.specs}
+                </a>
+              </li>
+              <li>
                 <a href="#security" className="hover:text-slate-950 transition-colors">
                   {t.nav.security}
+                </a>
+              </li>
+              <li>
+                <a href="#faq" className="hover:text-slate-950 transition-colors">
+                  {t.nav.faq}
                 </a>
               </li>
             </ul>
@@ -93,6 +102,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenDiagnostic }) => {
               <li>ISO / IEC 27001</li>
               <li>Sovereign VPC Deployable</li>
               <li>Zero Data Training Policy</li>
+              <li>Cryptographic Audit Hash</li>
             </ul>
           </div>
 

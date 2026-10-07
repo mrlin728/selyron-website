@@ -11,7 +11,9 @@ import {
   ShieldCheck, 
   Terminal, 
   Clock, 
-  ChevronRight
+  ChevronRight,
+  Code2,
+  Network
 } from 'lucide-react';
 
 export const InteractiveDagRunner: React.FC = () => {
@@ -24,6 +26,7 @@ export const InteractiveDagRunner: React.FC = () => {
   const [cumulativeLatency, setCumulativeLatency] = useState<number>(0);
   const [showJsonInspector, setShowJsonInspector] = useState<boolean>(true);
   const [payloadTab, setPayloadTab] = useState<'ingress' | 'egress'>('ingress');
+  const [viewMode, setViewMode] = useState<'visual' | 'code'>('visual');
 
   const scenario = getScenario(selectedScenarioId) || dagScenarios[0];
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -104,7 +107,6 @@ export const InteractiveDagRunner: React.FC = () => {
     if (isRunning) return;
     resetDag();
     setIsRunning(true);
-    // Begin from step 0
     setTimeout(() => {
       executeStep(0, true);
     }, 100);
@@ -131,7 +133,6 @@ export const InteractiveDagRunner: React.FC = () => {
     setIsHitlPaused(false);
     setIsRunning(true);
 
-    // Resume execution for next node
     const nextIndex = activeNodeIndex + 1;
     if (nextIndex < scenario.nodes.length) {
       timerRef.current = setTimeout(() => {
@@ -143,6 +144,85 @@ export const InteractiveDagRunner: React.FC = () => {
   };
 
   const allCompleted = scenario.nodes.every(n => nodeStatuses[n.id] === 'completed');
+
+  // Generate scenario-specific declarative code preview
+  const getScenarioCode = () => {
+    if (scenario.id === 's1') {
+      return `// Scenario 01: Multimodal Document Ingestion & Cross-ERP Reconciliation
+import { defineWorkflow, step } from '@selyron/core';
+
+export const InvoiceReconciliation = defineWorkflow({
+  id: 'wf_invoice_reconcile',
+  idempotency: (evt) => \`doc_\${evt.document_id}\`,
+  retries: { maxAttempts: 5, backoff: 'exponential' },
+  
+  async run({ rawFile, ocrParser, sapClient, generalLedger }) {
+    // 01. Ingestion & SHA-256 Hash Seal
+    const sealedDoc = await step('n1-ingest', () => ocrParser.seal(rawFile));
+    
+    // 02. Multi-Pass Structured Extraction (99.98% Confidence)
+    const lineItems = await step('n1-extract', () => ocrParser.extract(sealedDoc));
+    
+    // 03. 3-Way Cross-ERP Reconciliation against SAP PO-4500918231
+    const match = await step('n1-reconcile', () => sapClient.matchPo(lineItems));
+    
+    // 04. Atomic General Ledger Commitment
+    return await step('n1-commit', () => generalLedger.postAtomic(match));
+  }
+});`;
+    }
+
+    if (scenario.id === 's2') {
+      return `// Scenario 02: Cross-System Event Ingress & Human-in-the-Loop Gate
+import { defineWorkflow, step, hitlApproval } from '@selyron/core';
+
+export const PaymentAnomalyTriage = defineWorkflow({
+  id: 'wf_payment_anomaly',
+  idempotency: (evt) => evt.idempotency_key,
+  
+  async run({ webhookPayload, riskEngine, escrowService }) {
+    // 01. Webhook Ingress & Distributed Redis Lock
+    const verifiedEvent = await step('n2-ingress', () => webhookPayload.verify());
+    
+    // 02. Financial Exposure & Risk Scoring ($250,000 threshold check)
+    const risk = await step('n2-exposure', () => riskEngine.score(verifiedEvent));
+    
+    // 03. Human-in-the-Loop Operator Gate (Cryptographic Signature Required)
+    if (risk.requiresApproval) {
+      await hitlApproval('n2-hitl', {
+        action: 'REVERSE_AND_HOLD',
+        exposureUsd: risk.amount,
+        notifyChannels: ['Feishu_Sec_Ops', 'Slack_CFO_Alert']
+      });
+    }
+    
+    // 04. Atomic Sync & Multi-System Reversal Rollback
+    return await step('n2-rollback', () => escrowService.executeReversal());
+  }
+});`;
+    }
+
+    return `// Scenario 03: Multi-Model Gateway & Immutable Audit Ledger
+import { defineWorkflow, step } from '@selyron/core';
+
+export const SovereignPolicyGateway = defineWorkflow({
+  id: 'wf_model_gateway',
+  
+  async run({ request, modelGateway, piiSanitizer, merkleAuditLedger }) {
+    // 01. Dynamic SLA & Cost Router (<120ms P99)
+    const route = await step('n3-router', () => modelGateway.route(request));
+    
+    // 02. Deterministic PII Stripping & Token Vault
+    const sanitizedPrompt = await step('n3-pii', () => piiSanitizer.mask(request.input));
+    
+    // 03. Sovereign VPC Inference Execution (DeepSeek-R1 / Private Weights)
+    const inferenceResult = await step('n3-infer', () => route.execute(sanitizedPrompt));
+    
+    // 04. SHA-256 Audit Trail Append
+    return await step('n3-audit', () => merkleAuditLedger.append(inferenceResult));
+  }
+});`;
+  };
 
   return (
     <section id="runtime" className="py-20 border-b border-slate-200 bg-white">
@@ -200,8 +280,31 @@ export const InteractiveDagRunner: React.FC = () => {
             </p>
           </div>
 
-          {/* Interactive Controls */}
+          {/* Interactive Controls & View Toggle */}
           <div className="flex items-center gap-2 flex-wrap">
+            {/* View Mode Switcher */}
+            <div className="flex p-0.5 bg-white rounded border border-slate-200 text-xs font-mono">
+              <button
+                onClick={() => setViewMode('visual')}
+                className={`flex items-center gap-1 px-2.5 py-1 rounded transition-colors ${
+                  viewMode === 'visual' ? 'bg-slate-950 text-white font-medium' : 'text-slate-600 hover:text-slate-950'
+                }`}
+              >
+                <Network className="w-3 h-3" />
+                <span>{t.dag.viewVisual}</span>
+              </button>
+              <button
+                onClick={() => setViewMode('code')}
+                className={`flex items-center gap-1 px-2.5 py-1 rounded transition-colors ${
+                  viewMode === 'code' ? 'bg-slate-950 text-white font-medium' : 'text-slate-600 hover:text-slate-950'
+                }`}
+              >
+                <Code2 className="w-3 h-3" />
+                <span>{t.dag.viewCode}</span>
+              </button>
+            </div>
+
+            {/* Execution Controls */}
             <button
               onClick={handleRunPipeline}
               disabled={isRunning || isHitlPaused}
@@ -269,97 +372,114 @@ export const InteractiveDagRunner: React.FC = () => {
           </div>
         )}
 
-        {/* DAG Nodes Visual Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-          {scenario.nodes.map((node, index) => {
-            const status = nodeStatuses[node.id] || 'idle';
+        {/* Dynamic Display: Visual Graph vs Declarative Code */}
+        {viewMode === 'visual' ? (
+          /* DAG Nodes Visual Grid */
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            {scenario.nodes.map((node, index) => {
+              const status = nodeStatuses[node.id] || 'idle';
 
-            return (
-              <div
-                key={node.id}
-                className={`relative p-4 rounded-lg border transition-all ${
-                  status === 'running'
-                    ? 'bg-emerald-50/40 border-emerald-400 ring-1 ring-emerald-400/30'
-                    : status === 'awaiting_approval'
-                    ? 'bg-amber-50/50 border-amber-400 ring-1 ring-amber-400/30'
-                    : status === 'completed'
-                    ? 'bg-white border-slate-300'
-                    : 'bg-slate-50/60 border-slate-200'
-                }`}
-              >
-                {/* Node Top Meta */}
-                <div className="flex items-center justify-between text-xs mb-2">
-                  <span className="font-mono text-[10px] text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">
-                    STEP 0{index + 1}
-                  </span>
-                  
-                  {/* Status Indicator */}
-                  <div className="flex items-center gap-1.5">
-                    {status === 'idle' && (
-                      <span className="flex items-center gap-1 text-[11px] font-mono text-slate-400">
-                        <span className="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
-                        Idle
-                      </span>
-                    )}
-                    {status === 'running' && (
-                      <span className="flex items-center gap-1 text-[11px] font-mono text-emerald-600 font-medium">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-status-pulse"></span>
-                        Executing
-                      </span>
-                    )}
-                    {status === 'awaiting_approval' && (
-                      <span className="flex items-center gap-1 text-[11px] font-mono text-amber-700 font-medium">
-                        <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-ping"></span>
-                        Awaiting HITL
-                      </span>
-                    )}
-                    {status === 'completed' && (
-                      <span className="flex items-center gap-1 text-[11px] font-mono text-emerald-700 font-medium">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                        Committed
+              return (
+                <div
+                  key={node.id}
+                  className={`relative p-4 rounded-lg border transition-all ${
+                    status === 'running'
+                      ? 'bg-emerald-50/40 border-emerald-400 ring-1 ring-emerald-400/30'
+                      : status === 'awaiting_approval'
+                      ? 'bg-amber-50/50 border-amber-400 ring-1 ring-amber-400/30'
+                      : status === 'completed'
+                      ? 'bg-white border-slate-300'
+                      : 'bg-slate-50/60 border-slate-200'
+                  }`}
+                >
+                  {/* Node Top Meta */}
+                  <div className="flex items-center justify-between text-xs mb-2">
+                    <span className="font-mono text-[10px] text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">
+                      STEP 0{index + 1}
+                    </span>
+                    
+                    {/* Status Indicator */}
+                    <div className="flex items-center gap-1.5">
+                      {status === 'idle' && (
+                        <span className="flex items-center gap-1 text-[11px] font-mono text-slate-400">
+                          <span className="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
+                          Idle
+                        </span>
+                      )}
+                      {status === 'running' && (
+                        <span className="flex items-center gap-1 text-[11px] font-mono text-emerald-600 font-medium">
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-status-pulse"></span>
+                          Executing
+                        </span>
+                      )}
+                      {status === 'awaiting_approval' && (
+                        <span className="flex items-center gap-1 text-[11px] font-mono text-amber-700 font-medium">
+                          <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-ping"></span>
+                          Awaiting HITL
+                        </span>
+                      )}
+                      {status === 'completed' && (
+                        <span className="flex items-center gap-1 text-[11px] font-mono text-emerald-700 font-medium">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                          Committed
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Role Badge */}
+                  <p className="font-mono text-[11px] uppercase tracking-wider text-slate-500 mb-1">
+                    {lang === 'zh' ? node.roleZh : node.roleEn}
+                  </p>
+
+                  {/* Node Name */}
+                  <h4 className="text-sm font-semibold text-slate-900 leading-snug">
+                    {lang === 'zh' ? node.nameZh : node.nameEn}
+                  </h4>
+
+                  {/* Node Description */}
+                  <p className="mt-2 text-xs text-slate-600 leading-relaxed">
+                    {lang === 'zh' ? node.descZh : node.descEn}
+                  </p>
+
+                  {/* Telemetry Footer */}
+                  <div className="mt-4 pt-3 border-t border-slate-200/80 flex items-center justify-between text-[11px] font-mono text-slate-500">
+                    <span className="flex items-center gap-1">
+                      <Clock className="w-3 h-3 text-slate-400" />
+                      {status === 'completed' ? `${node.durationMs}ms` : `~${node.durationMs}ms`}
+                    </span>
+                    {node.isHitl && (
+                      <span className="text-amber-700 font-semibold bg-amber-100/80 px-1 rounded text-[10px]">
+                        HITL GATE
                       </span>
                     )}
                   </div>
-                </div>
 
-                {/* Role Badge */}
-                <p className="font-mono text-[11px] uppercase tracking-wider text-slate-500 mb-1">
-                  {lang === 'zh' ? node.roleZh : node.roleEn}
-                </p>
-
-                {/* Node Name */}
-                <h4 className="text-sm font-semibold text-slate-900 leading-snug">
-                  {lang === 'zh' ? node.nameZh : node.nameEn}
-                </h4>
-
-                {/* Node Description */}
-                <p className="mt-2 text-xs text-slate-600 leading-relaxed">
-                  {lang === 'zh' ? node.descZh : node.descEn}
-                </p>
-
-                {/* Telemetry Footer */}
-                <div className="mt-4 pt-3 border-t border-slate-200/80 flex items-center justify-between text-[11px] font-mono text-slate-500">
-                  <span className="flex items-center gap-1">
-                    <Clock className="w-3 h-3 text-slate-400" />
-                    {status === 'completed' ? `${node.durationMs}ms` : `~${node.durationMs}ms`}
-                  </span>
-                  {node.isHitl && (
-                    <span className="text-amber-700 font-semibold bg-amber-100/80 px-1 rounded text-[10px]">
-                      HITL GATE
-                    </span>
+                  {/* Step Connector Arrow (for desktop) */}
+                  {index < scenario.nodes.length - 1 && (
+                    <div className="hidden md:block absolute -right-3 top-1/2 -translate-y-1/2 z-10 text-slate-300">
+                      <ChevronRight className="w-5 h-5" />
+                    </div>
                   )}
                 </div>
-
-                {/* Step Connector Arrow (for desktop) */}
-                {index < scenario.nodes.length - 1 && (
-                  <div className="hidden md:block absolute -right-3 top-1/2 -translate-y-1/2 z-10 text-slate-300">
-                    <ChevronRight className="w-5 h-5" />
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        ) : (
+          /* Declarative Code View */
+          <div className="mb-6 rounded-lg border border-slate-200 bg-slate-950 text-slate-200 overflow-hidden shadow-sm">
+            <div className="flex items-center justify-between px-4 py-2 border-b border-slate-800 text-[11px] font-mono text-slate-400">
+              <span className="flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                <span>{scenario.id}_runtime_workflow.ts</span>
+              </span>
+              <span>STATE MACHINE SPECIFICATION</span>
+            </div>
+            <div className="p-4 overflow-x-auto text-xs font-mono leading-relaxed text-slate-300">
+              <pre>{getScenarioCode()}</pre>
+            </div>
+          </div>
+        )}
 
         {/* Telemetry Strip & JSON Payload Inspector Panel */}
         <div className="border border-slate-200 rounded-lg overflow-hidden bg-slate-900 text-slate-200 shadow-sm">
