@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useApp } from '../context/LanguageContext';
-import { ArrowRight, Terminal, Shield, Cpu, Activity, Database, Copy, Check } from 'lucide-react';
+import { ArrowRight, Terminal, Shield, Cpu, Activity, Database } from 'lucide-react';
 
 interface HeroSectionProps {
   onOpenDiagnostic: () => void;
@@ -8,13 +8,6 @@ interface HeroSectionProps {
 
 export const HeroSection: React.FC<HeroSectionProps> = ({ onOpenDiagnostic }) => {
   const { t } = useApp();
-  const [copiedCli, setCopiedCli] = useState<boolean>(false);
-
-  const handleCopyCommand = () => {
-    navigator.clipboard.writeText(t.hero.copyCommand);
-    setCopiedCli(true);
-    setTimeout(() => setCopiedCli(false), 2000);
-  };
 
   return (
     <section className="relative pt-16 pb-20 md:pt-24 md:pb-28 border-b border-slate-200 bg-white overflow-hidden">
@@ -59,30 +52,6 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onOpenDiagnostic }) =>
               <Terminal className="w-4 h-4 text-slate-500" />
               <span>{t.hero.inspectRuntime}</span>
             </a>
-          </div>
-
-          {/* Quick CLI Evaluation Snippet */}
-          <div className="mt-6 inline-flex items-center gap-2 p-1.5 pl-3 pr-2 bg-slate-950 text-slate-200 rounded-lg border border-slate-800 text-xs font-mono shadow-sm">
-            <span className="text-emerald-400 font-semibold">$</span>
-            <code className="text-slate-300 font-mono text-[11px] sm:text-xs">
-              {t.hero.copyCommand}
-            </code>
-            <button
-              onClick={handleCopyCommand}
-              className="ml-2 p-1 hover:bg-slate-800 rounded text-slate-400 hover:text-white transition-colors"
-              title="Copy to clipboard"
-            >
-              {copiedCli ? (
-                <Check className="w-3.5 h-3.5 text-emerald-400" />
-              ) : (
-                <Copy className="w-3.5 h-3.5" />
-              )}
-            </button>
-            {copiedCli && (
-              <span className="text-[10px] text-emerald-400 font-mono ml-1 hidden sm:inline">
-                {t.hero.copiedCommand}
-              </span>
-            )}
           </div>
         </div>
 

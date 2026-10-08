@@ -19,10 +19,7 @@ export const en = {
     title: "Deterministic Automation for the Enterprise Core",
     subtitle: "High-reliability, auditable, state-persistent automation infrastructure. Unifying legacy ERPs, multi-model gateways, and distributed operations with zero silent failures.",
     startAssessment: "Start Architecture Assessment",
-    inspectRuntime: "Inspect Live DAG Engine",
-    cliPill: "CLI PREVIEW",
-    copyCommand: "curl -fsSL https://get.selyron.com/eval | sh",
-    copiedCommand: "Command copied to clipboard!"
+    inspectRuntime: "Inspect Live DAG Engine"
   },
   telemetry: {
     determinism: "99.99% Execution Determinism",

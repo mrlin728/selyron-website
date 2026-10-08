@@ -19,10 +19,7 @@ export const zh = {
     title: "企业核心业务的确定性自动化基础设施",
     subtitle: "高可靠、可审计、状态持久化的企业级自动化基础设施。统一跨遗留 ERP、多模型决策网关与分布式业务系统的复杂流转，实现零隐性故障。",
     startAssessment: "启动架构评估",
-    inspectRuntime: "查看 DAG 实时演练",
-    cliPill: "CLI 评估命令",
-    copyCommand: "curl -fsSL https://get.selyron.com/eval | sh",
-    copiedCommand: "命令已复制到剪贴板！"
+    inspectRuntime: "查看 DAG 实时演练"
   },
   telemetry: {
     determinism: "99.99% 执行确定性",
